@@ -1,0 +1,2 @@
+[10-Oct-2014 15:53:21 Asia/Chongqing] PHP Fatal error:  Class 'Action' not found in /Users/daidong/Sites/thinkphp/app/Lib/Action/Home/IndexAction.class.php on line 6
+[10-Oct-2014 15:53:36 Asia/Chongqing] PHP Fatal error:  Class 'Action' not found in /Users/daidong/Sites/thinkphp/app/Lib/Action/Home/IndexAction.class.php on line 8
