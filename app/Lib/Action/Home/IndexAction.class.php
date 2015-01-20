@@ -12,16 +12,111 @@ class IndexAction extends BaseAction
     }
 
     public function index(){
-        $this->display();
+        if(IS_POST){
+        //if(1){
+            $data['name'] = $_POST['name'];
+            $data['studentid'] = $_POST['studentid'];
+            $data['gid'] = $_POST['subGroup'];
+            $data['courseid'] = $_POST['course'];
+            $data['date'] = date('Y-m-d H:i:s');
+            
+            //$data = array('name'=>'dd','studentid'=>'1','gid'=>'3','courseid'=>'1','date'=>date('Y-m-d'));
+            //今天有没有下载
+            $isqiandao = M('qiandao')->where(array('studentid'=>$data['studentid'],'course'=>$data['courseid'],'date'=>$data['date']))->find();
+            //echo M('qiandao')->getLastSql();
+            if($isqiandao){
+                echo json_encode(array('status'=>'-1','msg'=>'您今天已签到，请勿重复签到！'));
+                return ;
+            }
+
+            
+            //得到上课时间，计算分数
+            $thisCourse = M('course')->where(array('id'=>$data['courseid']))->find();
+            $now = time();
+            $startarr = explode(':', $thisCourse['starttime']);
+            $courseStartTime = mktime($startarr[0],$startarr[1],'00',date('m'),date('d'),date('Y'));
+            $late = $now - $courseStartTime;
+            
+            if($late>0){
+                $latescore = intval($late/(60*$thisCourse['scorerule']));
+                $data['score'] = 100 - $latescore;
+            }
+            //得到mac
+            $data['mac'] = "00:00:00:00:00";
+            
+            // 保存
+            if(M('qiandao')->add($data)){
+                echo json_encode(array('status'=>'0','msg'=>'签到成功！'));
+                return ;
+            }else{
+                echo json_encode(array('status'=>'-2','msg'=>'Unexpected Error!'));
+                return ;
+            }
+
+ 
+        }else{
+            $course = M('Course')->select();
+            foreach ($course as $key => $value) {
+              $group = $this->getClassGroup($value);
+              $course[$key]['Group'] = $group;
+            }
+            $courseJson = urldecode(json_encode($this->url_encode($course)));
+            $this->assign('CourseJson',$courseJson);
+            print_r($_SERVER);
+            $this->display();
+        }
+        
     }
 
+    //根据class递归得到其分组
+    private function getClassGroup($class){
+        $parentGroup = M('Group')->where(array('classid'=>$class['id'],'parentid'=>'0'))->select();
+        foreach ($parentGroup as $key => $value) {
+            if(!$value['parentid']){
+                $subGroup = M('Group')->where(array('parentid'=>$value['id']))->order(' id asc ')->select();
+                $parentGroup[$key]['subGroup'] = $subGroup;
+            }
+        }
+        return $parentGroup;
+    }
+
+    //递归将数组每项urlencode
+    private function url_encode($str){
+         if(is_array($str)) {
+             foreach($str as $key=>$value) {
+                 $str[urlencode($key)] = $this->url_encode($value);
+             }
+         } else {
+             $str = urlencode($str);
+         }
+         return $str;
+     }
+
+
+
     public function test(){
-    	echo 19;
     	$this->display();
     }
 
     public function newtest(){
         $this->display();
+    }
+
+    public function login(){
+        if(IS_POST){
+            $studentid = $this->_post('sid');
+            $password = $this->_post('pass');
+            $r = M('Login')->where(array('studentid'=>$sid,'password'=>md5($password)))->find();
+            if($r){
+                session('sid',$sid);   
+            }
+        }else{
+            if(session('sid')){
+                $this->display('main');
+            }else{
+                $this->display('login');
+            }
+        }
     }
 
     public  function ha(){
