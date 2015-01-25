@@ -62,8 +62,9 @@ class IndexAction extends BaseAction
             }
             $courseJson = urldecode(json_encode($this->url_encode($course)));
             $this->assign('CourseJson',$courseJson);
-            print_r($_SERVER);
-            $this->display();
+            $this->assign('Course',$course);
+            
+            $this->display('form');
         }
         
     }
@@ -92,6 +93,9 @@ class IndexAction extends BaseAction
          return $str;
      }
 
+    public function db(){
+        $this->display();
+    }
 
 
     public function test(){
