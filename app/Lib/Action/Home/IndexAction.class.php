@@ -14,8 +14,9 @@ class IndexAction extends BaseAction
     public function index(){
         if(IS_POST){
         //if(1){
+            var_dump($_POST);die;
             $data['name'] = $_POST['name'];
-            $data['studentid'] = $_POST['studentid'];
+            $data['studentid'] = $_POST['sid'];
             $data['gid'] = $_POST['subGroup'];
             $data['courseid'] = $_POST['course'];
             $data['date'] = date('Y-m-d H:i:s');

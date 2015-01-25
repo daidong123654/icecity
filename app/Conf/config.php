@@ -22,10 +22,10 @@ return array(
 
 
 	//默认错误跳转对应的模板文件
-	'TMPL_ACTION_ERROR' => THINK_PATH . 'Tpl/dispatch_jump.tpl',
+	//'TMPL_ACTION_ERROR' => THINK_PATH . 'Tpl/dispatch_jump.tpl',
 	//默认成功跳转对应的模板文件
-	'TMPL_ACTION_SUCCESS' => THINK_PATH . 'Tpl/dispatch_jump.tpl',
-	'SHOW_PAGE_TRACE' =>true, // 显示页面Trace信息
+	//'TMPL_ACTION_SUCCESS' => THINK_PATH . 'Tpl/dispatch_jump.tpl',
+	//'SHOW_PAGE_TRACE' =>true, // 显示页面Trace信息
 
 	//URL
 	'URL_CASE_INSENSITIVE' =>TRUE,
@@ -39,17 +39,9 @@ return array(
 		),
 	//模板路径
 	 //'TMPL_FILE_DEPR'=>'_',
-	 'TMPL_TEMPLATE_SUFFIX'=>'.html',//模板後綴
+	 //'TMPL_TEMPLATE_SUFFIX'=>'.html',//模板後綴
 
-	'TRACE_PAGE_TABS'=>array(
-	    'base'=>'基本',
-	    'file'=>'文件',
-	    'think'=>'流程',
-	    'error'=>'错误',
-	    'sql'=>'SQL',
-	    'error|debug|sql'=>'调试',
-	    'user'=>'用户',
- 	),
+	
 	
 );
 

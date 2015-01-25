@@ -21,13 +21,12 @@
                 //var_dump($Course);
             ?>
             <div data-role="content">
-                <form method="get" action="">
-
+                <form  action="#" method="post">
                     <div data-role="fieldcontain">
                         <label for="course">课程：</label>
                         <select id="course" name="course">
                             <volist name="Course" id="c" >
-                                <option  id="course_{apms:$i}" value="{apms:$c.id}">{apms:$c.name}</option>
+                                <option  id="course_{apms:$i-1}" value="{apms:$c.id}">{apms:$c.name}</option>
                             </volist>
                         </select>
                     </div>
@@ -39,14 +38,14 @@
 
                     <div data-role="fieldcontain">
                         <label for="sid">学号</label>
-                        <input type="number" name="sid" id="sid" value="" placeholder="学号">
+                        <input type="text" name="sid" id="sid" value="" placeholder="学号">
                     </div>
 
                     <div data-role="fieldcontain">
                         <label for="parentGroup">大组</label>
                         <select id="parentGroup" name="parentGroup">
                             <volist name="Course[0]['Group']" id="G">
-                                <option pgid="{apms:$i}" id="pg_{apms:$i}" value="{apms:$G['name']}" >{apms:$G['name']}</option>
+                                <option  id="pg_{apms:$i-1}" value="{apms:$G['name']}" >{apms:$G['name']}</option>
                             </volist>
                         </select>
                     </div>
@@ -55,9 +54,14 @@
                         <label for="subGroup">小组</label>
                         <select id="subGroup" name="subGroup">
                             <volist name="Course[0]['Group'][0]['subGroup']" id="SG">
-                                <option sgid="{apms:$i}" id="sg_{$i}" value="{apms:$SG['name']}" >{apms:$SG['name']}</option>
+                                <option  id="sg_{apms:$i-1}" value="{apms:$SG['name']}" >{apms:$SG['name']}</option>
                             </volist>
                         </select>
+                    </div>
+
+                    <div data-role="fieldcontain">
+                        <label for="submit"></label>
+                        <input id="submit" type="submit" value="确认签到" />
                     </div>
 
                 </form>
@@ -66,10 +70,52 @@
     </body>
     <script type="text/javascript">
         $().ready(function(){
+            CourseJson = {apms:$CourseJson};
+
+            //课程变化大组跟着变化
             $("#course").change(function(){
                 //选中的option的id
                 a = $(this).children('option:selected').attr('id');
                 aid = a.split('_');  //被选中的课程在数组中的id就是aid[1]
+                //大组对象
+                pgselect = $("#parentGroup");
+                //小组对象
+                sgselect = $("#subGroup");
+
+                //课程分组
+                Groups = CourseJson[aid[1]]['Group'];
+                //console.log(Groups);
+                
+                //清空当前分组
+                pgselect.html("<option value='' selected > 请选择大组...</option>");
+                sgselect.html("<option value='' selected > 请选择小组...</option>");
+                $.each(Groups,function(i,n){
+                    pgselect.append("<option value='" + this.id + "' id='pg_"+i+"'>" + this.name + "</option>");    
+                    
+                });
+                
+            });
+
+            //大组变化，小组跟着变化
+            $("#parentGroup").change(function(){
+                //课程中选中的option的id
+                a = $(this).children('option:selected').attr('id');
+                aid = a.split('_');  //被选中的课程在数组中的id就是aid[1]
+
+                //大组中选中的option的id
+                b = $(this).children('option:selected').attr('id');
+                bid = a.split('_');  //被选中的大组在数组中的id就是aid[1]
+                //小组对象
+                sgselect = $("#subGroup");
+                //大组下的分组
+                subGroups = CourseJson[aid[1]]['Group'][bid[1]]['subGroup'];
+                
+                //清空当前分组
+                sgselect.html("<option value='' selected > 请选择小组...</option>");
+                $.each(subGroups,function(i,n){
+                    sgselect.append("<option value='" + this.id + "' id='sg_"+i+"'>" + this.name + "</option>");    
+                    
+                });
             });
         });
 
