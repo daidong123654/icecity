@@ -31,12 +31,12 @@ return array(
 	'URL_CASE_INSENSITIVE' =>TRUE,
 	'URL_HTML_SUFFIN'=>'html',//url後綴  或用U('index/index',array('uid'=>1,'id'=>2),'htm',1)第三個參數為後綴，第四個為是否跳轉
 	//URL重写
-	'URL_MODEL'=>2,
+	/*'URL_MODEL'=>2,
 	'URL_ROUTER_ON'=>true,
 	'URL_ROUTE_RULES'=>array(
 		'/^c_(\d+)$/'=>'Index/List/index?id=:1',
 		':id\d'=>'Index/Show/'
-		),
+		),*/
 	//模板路径
 	 //'TMPL_FILE_DEPR'=>'_',
 	 //'TMPL_TEMPLATE_SUFFIX'=>'.html',//模板後綴
