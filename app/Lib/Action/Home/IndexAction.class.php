@@ -14,19 +14,30 @@ class IndexAction extends BaseAction
     public function index(){
         if(IS_POST){
         //if(1){
-            var_dump($_POST);die;
+            
             $data['name'] = $_POST['name'];
             $data['studentid'] = $_POST['sid'];
-            $data['gid'] = $_POST['subGroup'];
-            $data['courseid'] = $_POST['course'];
-            $data['date'] = date('Y-m-d H:i:s');
-            
+            $data['pgid'] = $_POST['parentGroup'];
+            $data['sgid'] = $_POST['subGroup'];
+            $data['courseid'] = $_POST['courseid'];
+            $data['date'] = date('Y-m-d');
+            $data['time'] = date('Y-m-d H:i:s');
+            $data['ip'] = get_client_ip();
+            //var_dump($data);
             //$data = array('name'=>'dd','studentid'=>'1','gid'=>'3','courseid'=>'1','date'=>date('Y-m-d'));
-            //今天有没有下载
-            $isqiandao = M('qiandao')->where(array('studentid'=>$data['studentid'],'course'=>$data['courseid'],'date'=>$data['date']))->find();
+            //今天有没有
+            $isqiandao = M('qiandao')->where(array('studentid'=>$data['studentid'],'courseid'=>$data['courseid'],'date'=>$data['date']))->find();
             //echo M('qiandao')->getLastSql();
             if($isqiandao){
                 echo json_encode(array('status'=>'-1','msg'=>'您今天已签到，请勿重复签到！'));
+                return ;
+            }
+
+            //IP鉴定
+            $ipuse = M('qiandao')->where(array('courseid'=>$data['courseid'],'date'=>$data['date'],'ip'=>$data['ip']))->find();
+            //echo M('qiandao')->getLastSql();
+            if($ipuse){
+                echo json_encode(array('status'=>'-2','msg'=>'您今天已签到，请勿替别人签到！'));
                 return ;
             }
 
@@ -36,25 +47,25 @@ class IndexAction extends BaseAction
             $now = time();
             $startarr = explode(':', $thisCourse['starttime']);
             $courseStartTime = mktime($startarr[0],$startarr[1],'00',date('m'),date('d'),date('Y'));
+
             $late = $now - $courseStartTime;
             
             if($late>0){
                 $latescore = intval($late/(60*$thisCourse['scorerule']));
                 $data['score'] = 100 - $latescore;
+                $data['score'] = $data['score']>=0?$data['score']:0;
             }
             //得到mac
-            $data['mac'] = "00:00:00:00:00";
+            $data['mac'] = "00:00:00:00:00:00";
             
             // 保存
             if(M('qiandao')->add($data)){
-                echo json_encode(array('status'=>'0','msg'=>'签到成功！'));
+                echo json_encode(array('status'=>'0','msg'=>'<p>签到时间:'.$data['time'].'</p><p>签到得分:'.$data['score'].'</p>'));
                 return ;
             }else{
-                echo json_encode(array('status'=>'-2','msg'=>'Unexpected Error!'));
+                echo json_encode(array('status'=>'-2','msg'=>'未知错误，请联系老师签到。'));
                 return ;
             }
-
- 
         }else{
             $course = M('Course')->select();
             foreach ($course as $key => $value) {
@@ -65,7 +76,7 @@ class IndexAction extends BaseAction
             $this->assign('CourseJson',$courseJson);
             $this->assign('Course',$course);
             
-            $this->display('form');
+            $this->display('bootstrapform');
         }
         
     }
@@ -129,72 +140,3 @@ class IndexAction extends BaseAction
     }
 }
 
-/** 
- *获取网卡的MAC地址原码；目前支持WIN/LINUX系统 
- *获取机器网卡的物理（MAC）地址 
- **/ 
-/*
-class GetMacAddr{ 
-
-    var $return_array = array(); // 返回带有MAC地址的字串数组 
-    var $mac_addr; 
-
-    function GetMacAddr($os_type){ 
-        switch ( strtolower($os_type) ){ 
-        case "linux": 
-            $this->forLinux(); 
-            break; 
-        case "solaris": 
-            break; 
-        case "unix": 
-            break; 
-        case "aix": 
-            break; 
-        default: 
-            $this->forWindows(); 
-            break; 
-
-        } 
-
-
-        $temp_array = array(); 
-        foreach ( $this->return_array as $value ){ 
-
-            if ( 
-                preg_match("/[0-9a-f][0-9a-f][:-]"."[0-9a-f][0-9a-f][:-]"."[0-9a-f][0-9a-f][:-]"."[0-9a-f][0-9a-f][:-]"."[0-9a-f][0-9a-f][:-]"."[0-9a-f][0-9a-f]/i",$value, 
-                $temp_array ) ){ 
-                    $this->mac_addr = $temp_array[0]; 
-                    break; 
-                } 
-
-        } 
-        unset($temp_array); 
-        return $this->mac_addr; 
-    } 
-
-
-    function forWindows(){ 
-        @exec("ipconfig /all", $this->return_array); 
-        if ( $this->return_array ) 
-            return $this->return_array; 
-        else{ 
-            $ipconfig = $_SERVER["WINDIR"]."\system32\ipconfig.exe"; 
-            if ( is_file($ipconfig) ) 
-                @exec($ipconfig." /all", $this->return_array); 
-            else 
-                @exec($_SERVER["WINDIR"]."\system\ipconfig.exe /all", $this->return_array); 
-            return $this->return_array; 
-        } 
-    } 
-
-
-
-    function forLinux(){ 
-        @exec("ifconfig -a", $this->return_array); 
-        return $this->return_array; 
-    } 
-
-} 
-//方法使用
-$mac = new GetMacAddr(PHP_OS); 
-echo $mac->mac_addr; */

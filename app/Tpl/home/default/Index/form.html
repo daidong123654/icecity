@@ -81,14 +81,14 @@
                 pgselect = $("#parentGroup");
                 //小组对象
                 sgselect = $("#subGroup");
-
                 //课程分组
                 Groups = CourseJson[aid[1]]['Group'];
-                //console.log(Groups);
                 
                 //清空当前分组
+                pgselect.html("");
                 pgselect.html("<option value='' selected > 请选择大组...</option>");
-                sgselect.html("<option value='' selected > 请选择小组...</option>");
+                sgselect.html("");
+                sgselect.html("<option value='' selected > 请先选择大组...</option>");
                 $.each(Groups,function(i,n){
                     pgselect.append("<option value='" + this.id + "' id='pg_"+i+"'>" + this.name + "</option>");    
                     
@@ -99,9 +99,9 @@
             //大组变化，小组跟着变化
             $("#parentGroup").change(function(){
                 //课程中选中的option的id
-                a = $(this).children('option:selected').attr('id');
+                a = $("#course").children('option:selected').attr('id');
                 aid = a.split('_');  //被选中的课程在数组中的id就是aid[1]
-
+                console.log(aid[1]);
                 //大组中选中的option的id
                 b = $(this).children('option:selected').attr('id');
                 bid = a.split('_');  //被选中的大组在数组中的id就是aid[1]
@@ -116,6 +116,57 @@
                     sgselect.append("<option value='" + this.id + "' id='sg_"+i+"'>" + this.name + "</option>");    
                     
                 });
+            });
+
+            //提交前校验
+            $("#submit").click(function(){
+                var post = {};
+                //课程id
+                post.courseid = $("#course").val();
+                //姓名
+                if(!$("#name").val().trim()){  
+                    $("#name").css('border','1px solid red');
+                    return false;
+                }else{
+                    $("#name").css('border','');
+                    post.name = $("#name").val();    
+                }
+                
+                //学号
+                if(!$("#sid").val().trim()){
+                    $("#sid").css('border','1px solid red');
+                    return false;
+                }else{
+                    $("#sid").css('border','');
+                    post.sid = $("#sid").val();
+                }
+                //大组
+                if(!$("#parentGroup").val()){
+                    $("#parentGroup").css('border','1px solid red');
+                    return false;
+                }else{
+                    $("#parentGroup").css('border','');
+                    post.parentGroup = $("#parentGroup").val();
+                }
+
+                //小组
+                if(!$("#subGroup").val()){
+                    $("#subGroup").css('border','1px solid red');
+                    return false;
+                }else{
+                    $("#subGroup").css('border','');
+                    post.subGroup = $("#subGroup").val();    
+                }
+                
+                $.post(
+                    '.',post,
+                    function(res){
+                        console.log(res);
+                        obj = eval("("+res+")");
+                        console.log(obj);
+                    }
+                );
+
             });
         });
 
