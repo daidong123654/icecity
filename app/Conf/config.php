@@ -13,12 +13,14 @@ return array(
 	'DEFAULT_THEME'  => 'default',
  	'TMPL_DETECT_THEME' => true, // 自动侦测模板主题
 	
-	'APP_GROUP_LIST' => 'Home,Admin,User',
+	'APP_GROUP_LIST' => 'Home,Admin',
 	'DEFAULT_GROUP'  => 'Home',
 	'DEFAULT_MODULE' => 'Index',
 	'DEFAULT_ACTION' => 'index',
 	'TMPL_L_DELIM'          =>'{apms:',         //模板引擎普通标签开始标记
 	'TMPL_R_DELIM'          =>'}',              //模板引擎普通标签结束标记
+
+	'SESSION_AUTO_START' => TRUE,
 
 
 	//默认错误跳转对应的模板文件

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="<?php echo STATICS;?>/bootstrap.min.css">
+    <script src="<?php echo STATICS;?>/jquery-2.1.3.min.js"></script>
+    <script src="<?php echo STATICS;?>/bootstrap.min.js"></script>  
+    <style type="text/css">
+        body {
+          padding-top: 60px;
+        }
+    </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <if condition="$courseid neq false">
+              	<a class="navbar-brand" href="#">{apms:$coursename}</a>
+              <else/>
+              	<a class="navbar-brand" href="#">请选择相应课程课件</a>
+          	  </if>
+              
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="{apms::U('Home/Index/index')}">签到</a></li>
+                <li><a href="{apms::U('Home/Index/infoList',array('courseid'=>$courseid))}">知识点</a></li>
+                <li><a href="{apms::U('Home/Index/test',array('courseid'=>$courseid))}">测验</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+        </nav>
+
+        <!--输入姓名、学号、第X大组、第X小组、课程名称（此为下拉选择框，暂时只有“柔性制造”），点击“签到”。-->
+        <div class="container">
+            <div data-role="content">
+                <div class="form-horizontal">
+                	<if condition="$courseid eq false">
+	                	<volist name="list" id="li" >
+	                		<div class="form-group">
+		                         <div class="col-sm-10">
+		                            <div id="course" name="course" class="form-control " style="border:none;">
+		                                <a href="{apms:$li['url']}">{apms:$li['course']['name']}</a>
+		                            </div>
+		                        </div>
+	                    	</div>
+	                	</volist>
+                	<else/>
+	                	<volist name="list" id="li" >
+	                		<div class="form-group">
+		                         <div class="col-sm-10">
+		                            <div id="course" name="course" class="form-control " style="border:none;">
+		                                <a href="{apms:$li['url']}">{apms:$li['title']}</a>
+		                            </div>
+		                        </div>
+	                    	</div>
+	                	</volist>	
+                	</if>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+              </div>
+              <div class="modal-body" id="myModelMsg">
+                
+              </div>
+              <div class="modal-footer"> 
+                <button type="button" class="btn btn-primary" data-dismiss="modal">朕知道了</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        $().ready(function(){
+            
+        });
+    </script>
+</html>

@@ -27,9 +27,9 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">主页</a></li>
-                <li><a href="#about">关于</a></li>
-                <li><a href="#contact">联系我</a></li>
+                <li class="active"><a href="{apms::U('Home/Index/index')}">签到</a></li>
+                <li><a href="{apms::U('Home/Index/infoList',array('courseid'=>session('courseid')))}">知识点</a></li>
+                <li><a href="{apms::U('Home/Index/test',array('courseid'=>session('courseid')))}">测验</a></li>
               </ul>
             </div><!--/.nav-collapse -->
           </div>
@@ -109,7 +109,7 @@
                 
               </div>
               <div class="modal-footer"> 
-                <button type="button" class="btn btn-primary" data-dismiss="modal">朕知道了</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="iknow">朕知道了</button>
               </div>
             </div>
           </div>
@@ -220,6 +220,9 @@
                     }
                 );
 
+            });
+            $("#iknow").click(function(){
+                window.location.reload();
             });
         });
 

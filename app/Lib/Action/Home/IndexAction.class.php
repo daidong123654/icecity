@@ -10,11 +10,10 @@ class IndexAction extends BaseAction
     {
         parent::__construct();
     }
-
+    //签到方法
     public function index(){
+        //签到，处理数据
         if(IS_POST){
-        //if(1){
-            
             $data['name'] = $_POST['name'];
             $data['studentid'] = $_POST['sid'];
             $data['pgid'] = $_POST['parentGroup'];
@@ -40,7 +39,6 @@ class IndexAction extends BaseAction
                 echo json_encode(array('status'=>'-2','msg'=>'您今天已签到，请勿替别人签到！'));
                 return ;
             }
-
             
             //得到上课时间，计算分数
             $thisCourse = M('course')->where(array('id'=>$data['courseid']))->find();
@@ -58,8 +56,18 @@ class IndexAction extends BaseAction
             //得到mac
             $data['mac'] = "00:00:00:00:00:00";
             
-            // 保存
-            if(M('qiandao')->add($data)){
+            //签到成功 保存
+            $qiandaoid = M('qiandao')->add($data);
+            if($qiandaoid){
+                //session('sid',$data['studentid']);
+                //session('name',$data['name']);
+                session(array('name'=>'session_id','expire'=>7200));
+                session('sid',$data['studentid']);
+                session('name',$data['name']);
+                session('isreg','10086');
+                session('qiandaoid',$qiandaoid);
+                session('courseid',$data['courseid']);
+                session('isreg',10086);
                 echo json_encode(array('status'=>'0','msg'=>'<p>签到时间:'.$data['time'].'</p><p>签到得分:'.$data['score'].'</p>'));
                 return ;
             }else{
@@ -67,18 +75,88 @@ class IndexAction extends BaseAction
                 return ;
             }
         }else{
-            $course = M('Course')->select();
-            foreach ($course as $key => $value) {
-              $group = $this->getClassGroup($value);
-              $course[$key]['Group'] = $group;
+            //未签到
+            //session('isreg',null);
+            if(!session('isreg')){
+                $course = M('Course')->select();
+                foreach ($course as $key => $value) {
+                  $group = $this->getClassGroup($value);
+                  $course[$key]['Group'] = $group;
+                }
+                $courseJson = urldecode(json_encode($this->url_encode($course)));
+                $this->assign('CourseJson',$courseJson);
+                $this->assign('Course',$course);
+                
+                $this->display('bootstrapform');    
+            }else{
+                //已签到
+                $qiandaoid = session('qiandaoid');
+                $qiandaoinfo = M('qiandao')->where(array('id'=>$qiandaoid))->find();
+                if(!empty($qiandaoinfo)){
+                    $course = M('course')->where(array('id'=>$qiandaoinfo['courseid']))->find();
+                    $qiandaoinfo['course'] = $course;
+                }
+                //var_dump($qiandaoinfo);
+                $this->assign('qiandaoinfo',$qiandaoinfo);
+                $this->display('hasreged');
             }
-            $courseJson = urldecode(json_encode($this->url_encode($course)));
-            $this->assign('CourseJson',$courseJson);
-            $this->assign('Course',$course);
-            
-            $this->display('bootstrapform');
         }
-        
+    }
+
+    //获取课程知识点
+    public function infoList($courseid=false){
+        //没有签到,列出全部课程的知识点
+        if(!$courseid){
+            $courses = M('course')->select();
+            $list = array();
+            foreach ($courses as $key => $value) {
+                //var_dump($value);
+                //array_push($list, C('site_url').U('Home/Index/infoList').'/courseid/'.$value['id']);
+                $list[$key]['course'] = $value;
+                $list[$key]['url'] = U('Home/Index/infoList').'/courseid/'.$value['id'];
+            }
+            $this->assign('courseid',false);
+            $this->assign('list',$list);
+            $this->display();
+        }else{
+            //已经签到,直接列出本课程的知识点
+            //var_dump($courseid);
+            $course = M('course')->where(array('id'=>$courseid))->find();
+            $coursename = $course['name'];
+            $this->assign('coursename',$coursename);
+            $this->assign('courseid',$courseid);
+
+            $list = array();
+            $infos = M('kejian')->field('id,title,courseid')->where(array('courseid'=>$courseid))->order('indexid asc')->select();
+            foreach ($infos as $key => $value) {
+                $list[$key]['title']=$value['title'];
+                $list[$key]['url'] = U('Home/Index/infoDetail').'/kejianid/'.$value['id'];
+            }
+            $this->assign('list',$list);
+            $this->display();
+        }
+    }
+
+    public function infoDetail($kejianid=false){
+        //if(!$kejianid){
+
+        //}else{
+            $kejian = M('kejian')->where(array('id'=>$kejianid))->find();
+            $this->assign('kejian',$kejian);
+
+            $course = M('course')->where(array('id'=>$kejian['courseid']))->find();
+            $coursename = $course['name'];
+            $this->assign('coursename',$coursename);
+            $this->assign('courseid',$course['id']);
+
+            $this->display();
+        //}
+    }
+
+    //随堂测验
+    public function test(){
+        $courseid = $this->_get('courseid');
+
     }
 
     //根据class递归得到其分组
@@ -93,7 +171,7 @@ class IndexAction extends BaseAction
         return $parentGroup;
     }
 
-    //递归将数组每项urlencode
+    //递归将数组每项urlencode,辅助函数
     private function url_encode($str){
          if(is_array($str)) {
              foreach($str as $key=>$value) {
@@ -105,38 +183,5 @@ class IndexAction extends BaseAction
          return $str;
      }
 
-    public function db(){
-        $this->display();
-    }
-
-
-    public function test(){
-    	$this->display();
-    }
-
-    public function newtest(){
-        $this->display();
-    }
-
-    public function login(){
-        if(IS_POST){
-            $studentid = $this->_post('sid');
-            $password = $this->_post('pass');
-            $r = M('Login')->where(array('studentid'=>$sid,'password'=>md5($password)))->find();
-            if($r){
-                session('sid',$sid);   
-            }
-        }else{
-            if(session('sid')){
-                $this->display('main');
-            }else{
-                $this->display('login');
-            }
-        }
-    }
-
-    public  function ha(){
-        echo "<br/>你们不要总是想弄个大新闻！然后再把我批判一番！据说已经钦定啦。今天我在这里，作为一个长者，我跟你们新闻界的说，你门呀，毕竟too young to simple,sometimes naive!";
-    }
 }
 
