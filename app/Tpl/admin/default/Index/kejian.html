@@ -1,0 +1,145 @@
+<include file="header"/>
+<script type="text/javascript" src="<?php echo STATICS;?>/qui/js/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="<?php echo STATICS;?>/qui/js/nav/jquery.layout.js"></script>
+<script type="text/javascript" src="<?php echo STATICS;?>/qui/js/nav/layout.js"></script>
+
+<body>
+	<div class="box2" panelTitle="课件管理" roller="false">
+		<table>
+			<tr>
+				<form method="get" action="{apms::U('Admin/Index/kejian')}" >
+					<td>课程:</td>
+					<td>
+						<select name="courseid" id="courseid" >
+							<option value="0">请选择...</option>
+							<volist name="courses" id="vc">
+								<option value="{apms:$vc.id}" <?php if($_GET['courseid']==$vc['id']) echo 'selected="selected"'?>>{apms:$vc.name}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<button type="submit">
+							<span class="icon_find" id="search">查询</span>
+						</button>
+					</td>
+				</form>
+			</tr>
+			<tr>
+				<td colspan="7">
+					<button><span class="icon_page" id="add">新增</span></button>
+					<button><span class="icon_refresh" id="refresh">刷新</span></button>
+					<button><span class="icon_delete" id="ManyDelete">删除</span></button>
+				</td>
+			</tr>
+		</table>
+	</div>
+<div id="scrollContent" class="border_gray" style="overflow:scroll;">
+	<table class="tableStyle">
+		<tr>
+			<th></th>
+			<th>编号</th>
+			<th width="30%">标题</th>
+			<th width="30%">排序ID</th>
+			<th width="30%">课程</th>
+			<th width="4%" style="min-width:100px;">操作</th>
+		</tr>
+		<tbody id="tbody">
+		<?php 
+			$i=1; 
+			foreach ($kejian as $key => $value) {
+		?>
+        	<tr id="tr_{apms:$value['id']}">
+        		<td width="25"><input type="checkbox"/></td>
+        		<td>{apms:$i}</td>
+        		<td>{apms:$value['title']}</td>
+        		<td>{apms:$value['indexid']}</td>
+        		<td>{apms:$value['course']['name']}</td>
+               	<td>
+               		<span class="img_edit hand" title="修改" onclick="edit(<?php echo $value['id'];?>)"></span>
+               		<span class="img_delete hand" title="删除" onclick="top.Dialog.confirm('确定删除？',function(){ SingleDelete(<?php echo $value['id'];?>);});"></span>
+               	</td>
+			</tr>
+        <?php 
+        	$i++; 
+    		} 
+        ?>                
+        </tbody>
+	</table>
+</div>
+
+
+<script type="text/javascript">
+$().ready(function(){
+	$("#scrollContent").css('overflow','scroll');
+
+	$("#search").click(function(){
+		url = "{apms::U('Admin/Index/kejian')}?courseid="+$("#courseid").val();
+		window.location.href=url;
+	});
+
+	$("#ManyDelete").click(function(){
+		if(!$("#tbody").find("tr").find("td:first").find("input[checked]").length){
+			top.Dialog.alert('请选择要删除的数据？');
+			return false;
+		}
+		top.Dialog.confirm('确定删除这些数据？',
+			function(){ ManyDelete();}
+		);
+	});
+
+	//add
+	$("#add").click(function(){
+		openAddWin();
+	});
+	//刷新
+	$("#refresh").click(function(){
+		window.location.reload();
+	});
+
+	
+});
+function edit(id){
+	window.location.href = "{apms::U('Admin/Index/kejianEdit')}?kid="+id+"&courseid="+"{apms:$_GET['courseid']}";
+}
+
+function SingleDelete(id){
+	//alert(this);
+	console.log(this);
+	//return false;
+	$.getJSON(
+		"{apms::U('Admin/Index/kejianDel')}/kid/"+id,
+		function(res){
+			console.log(res);
+			if(res.status==0){
+				if(alert){
+					top.Dialog.open({InnerHtml:"删除成功",AutoClose:2,Title:"删除成功"});
+				}
+				
+				//刷新或者是不刷新都可以
+				window.location.reload();
+				$("#tr_"+id).remove();
+				return true;
+			}
+		});
+}
+function ManyDelete(){
+	trs = $("#tbody").find("tr").find("td:first").find("input[checked]").parent().parent();
+	
+	$.each(trs,function(i,n){
+		value = this.id.split('_')[1];
+		console.log(value);
+		SingleDelete(value);
+    });
+}
+
+function openAddWin(){
+	window.location.href = "{apms::U('Admin/Index/kejianAdd',array('courseid'=>$_GET['courseid']))}";
+}
+</script>
+</body>
+
+
+
+
+
+

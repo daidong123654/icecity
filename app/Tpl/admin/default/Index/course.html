@@ -20,6 +20,7 @@
 	<table class="tableStyle">
 		<tr>
 			<th></th>
+			<th>序号</th>
 			<th width="20%">课程名称</th>
 			<th width="20%">上课时间</th>
 			<th width="20%">迟到扣分比(分钟/分)</th>
@@ -33,6 +34,7 @@
 		?>
         	<tr id="tr_{apms:$value['id']}">
         		<td width="25"><input type="checkbox"/></td>
+        		<td>{apms:$i}</td>
         		<td>{apms:$value['name']}</td>
         		<td>{apms:$value['starttime']}</td>
         		<td>{apms:$value['scorerule']}(分钟/分)</td>
@@ -119,8 +121,7 @@ function SingleDelete(id){
 }
 function ManyDelete(){
 	trs = $("#tbody").find("tr").find("td:first").find("input[checked]").parent().parent();
-
-	field = "<?php echo  $forms[0]['Field']; ?>";
+	
 	//alert(field);
 	//console.log(trs);
 	$.each(trs,function(i,n){

@@ -46,7 +46,7 @@
                       <h5 for="name" class="col-sm-2 control-label text-center">{apms:$kejian['title']}</h5>
 		                  <div class="col-sm-10">
 		                      <p id="course" name="course" class="form-control " style="border:none;">
-		                          {apms:$kejian['content']}
+		                          {apms:$kejian['content']|html_entity_decode|htmlspecialchars_decode }
 		                      </p>
 		                  </div>
 	                 </div>

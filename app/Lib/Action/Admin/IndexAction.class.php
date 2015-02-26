@@ -214,9 +214,98 @@ class IndexAction extends BaseAction
 
     /******************课件管理**************************/
     public function kejian(){
+        $courseid = $this->_get('courseid');
 
+        if($courseid){
+            $where = array();
+            if($courseid)
+                $where['courseid'] = $courseid;
+            if(!empty($where)){
+                $kejian = M('kejian')->field('id,title,courseid,indexid')->where($where)->order('indexid desc')->select();    
+            }else{
+                $kejian = M('kejian')->field('id,title,courseid,indexid')->order('id desc')->select();  
+            }
+        }else{
+            $kejian = M('kejian')->field('id,title,courseid,indexid')->order('id desc')->select();  
+        }
+
+        foreach ($kejian as $key => $value) {
+            $kejian[$key]['course'] = M('course')->where(array('id'=>$value['courseid']))->find();
+        }
+        $this->assign('kejian',$kejian);
+        //var_dump($kejian);
+        $courses = M('course')->select();
+        $this->assign('courses',$courses);
+        //var_dump($students);
+        $this->display();
     }
 
+    //新增
+    public function kejianAdd(){
+        $courseid = $this->_get('courseid');
+        if(IS_POST){
+            $data['courseid'] = $this->_post('courseid');
+            $data['title'] = $this->_post('title');
+            $data['indexid'] = $this->_post('indexid');
+            $data['content'] = $this->_post('content');
+
+            $id = M('kejian')->add($data);
+            if($id){
+                $this->success('Success',U('kejian',array('courseid'=>$courseid)));
+            }else{
+                $this->success('Success',U('kejianAdd',array('courseid'=>$courseid)));
+            }   
+            return;
+        }else{
+            $this->assign('courseid',$courseid);
+            $courses = M('course')->select();
+            $this->assign('courses',$courses);
+            $this->display();
+        }
+    }
+    //修改
+    public function kejianEdit(){
+        $kid = $this->_get('kid');
+        $courseid = $this->_get('courseid');
+        if(IS_POST){
+            $data['courseid'] = $this->_post('courseid');
+            $data['title'] = $this->_post('title');
+            $data['indexid'] = $this->_post('indexid');
+            $data['content'] = $this->_post('content');
+
+            $id = M('kejian')->where(array('id'=>$kid))->save($data);
+            if($id){
+                //$this->success('Success','kejian?courseid='.$courseid);
+                $this->success('Success',U('kejian',array('courseid'=>$courseid)));
+
+            }else{
+                //$this->success('Success','kejian?courseid='.$courseid);
+                $this->error('Success',U('kejian',array('courseid'=>$courseid,'kid'=>$kid)));
+            }   
+            return;
+        }else{
+            $kejian = M('kejian')->where(array('id'=>$kid))->find();
+            $this->assign('kejian',$kejian);
+            $courses = M('course')->select();
+            $this->assign('courses',$courses);
+            $this->display();
+        }
+    }
+
+    //删除
+    public function kejianDel($kid){
+        if($kid){
+            $rid = M('kejian')->where(array('id'=>$kid))->delete();
+            if($rid){
+                echo json_encode(array('status'=>0,'msg'=>'Success'));
+            }else{
+                echo json_encode(array('status'=>-2,'msg'=>'Failed'));
+            }
+        }else{
+            echo json_encode(array('status'=>-1,'msg'=>'Error'));
+        }
+
+    }
     /******************课件管理**************************/
     public function test(){
         

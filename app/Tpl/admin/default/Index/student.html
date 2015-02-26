@@ -48,6 +48,7 @@
 	<table class="tableStyle">
 		<tr>
 			<th></th>
+			<th>序号</th>
 			<th width="15%">姓名</th>
 			<th width="15%">学号</th>
 			<th width="15%">签到得分</th>
@@ -63,6 +64,7 @@
 		?>
         	<tr id="tr_{apms:$value['id']}">
         		<td width="25"><input type="checkbox"/></td>
+        		<td>{apms:$i}</td>
         		<td>{apms:$value['name']}</td>
         		<td>{apms:$value['studentid']}</td>
         		<td>{apms:$value['score']}</td>
