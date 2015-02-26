@@ -1,0 +1,139 @@
+<include file="header"/>
+<script type="text/javascript" src="<?php echo STATICS;?>/qui/js/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="<?php echo STATICS;?>/qui/js/nav/jquery.layout.js"></script>
+<script type="text/javascript" src="<?php echo STATICS;?>/qui/js/nav/layout.js"></script>
+
+<body>
+	<div class="box2" panelTitle="签到管理" roller="false">
+		<table>
+			<tr>
+				<form method="get" action="{apms::U('Admin/Index/student')}" >
+					<td>课程:</td>
+					<td>
+						<select name="courseid" id="courseid" >
+							<option value="0">请选择...</option>
+							<volist name="courses" id="vc">
+								<option value="{apms:$vc.id}" <?php if($_GET['courseid']==$vc['id']) echo 'selected="selected"'?>>{apms:$vc.name}</option>
+							</volist>
+						</select>
+					</td>
+					<td>日期：</td>
+					<td>
+						<input type="text" class="date" name="date" id="date" 
+							<?php if($_GET['date']){?> 
+								value="<?php echo $_GET['date'];?>" 
+							<?php }else{
+							?>
+								value="<?php echo date('Y-m-d');?>" 
+							<?php	
+							}?>
+						/>
+					</td>
+					<td>
+						<button type="submit">
+							<span class="icon_find" id="search">查询</span>
+						</button>
+					</td>
+				</form>
+			</tr>
+			<tr>
+				<td colspan="7">
+					<button><span class="icon_page" id="add">签到</span></button>
+					<button><span class="icon_refresh" id="refresh">刷新</span></button>
+				</td>
+			</tr>
+		</table>
+	</div>
+<div id="scrollContent" class="border_gray" style="overflow:scroll;">
+	<table class="tableStyle">
+		<tr>
+			<th></th>
+			<th width="15%">姓名</th>
+			<th width="15%">学号</th>
+			<th width="15%">签到得分</th>
+			<th width="15%">签到时间</th>
+			<th width+"15%">签到IP</th>
+			<th width="15%">课程</th>
+			<th width="4%" style="min-width:100px;">操作</th>
+		</tr>
+		<tbody id="tbody">
+		<?php 
+			$i=1; 
+			foreach ($students as $key => $value) {
+		?>
+        	<tr id="tr_{apms:$value['id']}">
+        		<td width="25"><input type="checkbox"/></td>
+        		<td>{apms:$value['name']}</td>
+        		<td>{apms:$value['studentid']}</td>
+        		<td>{apms:$value['score']}</td>
+        		<td>{apms:$value['time']}</td>
+        		<td>{apms:$value['ip']}</td>
+        		<td>{apms:$value['course']['name']}</td>
+               	<td>
+               		<span class="img_edit hand" title="修改" onclick="edit(<?php echo $value['id'];?>)"></span>
+               	</td>
+			</tr>
+        <?php 
+        	$i++; 
+    		} 
+        ?>                
+        </tbody>
+	</table>
+</div>
+
+
+<script type="text/javascript">
+$().ready(function(){
+	$("#scrollContent").css('overflow','scroll');
+
+	$("#search").click(function(){
+		url = "{apms::U('Admin/Index/student')}?courseid="+$("#courseid").val()+"&date="+$("#date").val().trim();
+		window.location.href=url;
+	});
+
+	//add
+	$("#add").click(function(){
+		openAddWin();
+	});
+	//刷新
+	$("#refresh").click(function(){
+		window.location.reload();
+	});
+	
+});
+function edit(id){
+	var diag = new top.Dialog();
+	diag.Title = "修改课程信息";	
+	diag.URL = "{apms::U('Admin/Index/studentEdit')}?qid="+id;
+	diag.Height='280';
+	diag.MessageTitle="课程信息";
+	diag.Message="主键";
+	diag.CancelEvent = function(){
+		//diag.innerFrame.contentWindow.location.reload();
+		diag.close();
+		};
+	diag.show();
+
+}
+
+function openAddWin(){
+	var diag = new top.Dialog();
+	diag.Title = "新增签到";
+	diag.URL = "{apms::U('Admin/Index/studentAdd')}";
+	diag.Height='280';
+	diag.MessageTitle="签到信息";
+	diag.Message="请填写签到信息";
+	diag.CancelEvent = function(){
+		diag.innerFrame.contentWindow.location.reload();
+		diag.close();
+		};
+	diag.show();
+}
+</script>
+</body>
+
+
+
+
+
+
