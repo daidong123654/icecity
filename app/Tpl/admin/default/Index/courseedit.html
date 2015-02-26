@@ -1,0 +1,87 @@
+<include file="header"/>
+<script type="text/javascript" src="<?php echo STATICS;?>/qui/js/form/loadmask.js"></script>
+
+<script src="<?php echo STATICS;?>/qui/js/form/validationEngine-cn.js" type="text/javascript"></script>
+<script src="<?php echo STATICS;?>/qui/js/form/validationEngine.js" type="text/javascript"></script>
+
+<!--框架必需end-->
+<body>
+	<div class="box1" panelWidth="500" panelTitle="新增课程" showStatus="false" roller="true">
+		<form action="{apms::U('Admin/Index/courseEdit')}?cid={apms:$course['id']}" method="post"> 
+			<table class="tableStyle" transMode="true">
+				<tr>
+					<td>课程名称</td><td><input type="text" name="name" id="name" class="validate[required]" value="{apms:$course['name']}" /></td>
+				</tr>		
+				
+				<tr>
+					<td>上课时间：</td>
+					<td>
+						<input type="text" class="date" dateFmt="HH:mm:ss" name="starttime" id="starttime" class="validate[required]" value="{apms:$course['starttime']}"/>
+					</td>
+
+				</tr>
+				<tr>
+					<td>扣分规则：</td>
+					<td>
+						<input type="text" name="scorerule" id="scorerule" class="validate[required,custom[onlyNumber]]" 
+						value="{apms:$course['scorerule']}" />(分钟/分)
+					</td>
+				</tr>
+				<tr>
+					<td>教师：</td>
+					<td>
+						<input type="text" name="teacher" id="teacher" class="validate[required]" value="{apms:$course['teacher']}"/>
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<input type="submit" id="submits" value=" 提 交 "/>
+						<input type="reset" value=" 重 置 "/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+<script type="text/javascript" src="<?php echo STATICS;?>/qui/js/form/multiselect.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+   $("#submit").click(function(){
+   		data = {};
+   		data.kname = $("#name").val();
+   		if(!data.kname){
+   			$("#name").css('border','1px solid red');
+   			return false;
+   		}
+   		data.starttime = $("#starttime").val();
+   		if(!data.starttime){
+   			$("#starttime").css('border','1px solid red');
+   			return false;
+   		}
+   		data.scorerule = $("#scorerule").val();
+   		if(!data.scorerule){
+   			$("#scorerule").css('border','1px solid red');
+   			return false;
+   		}
+   		data.teacher = $("#teacher").val();
+   		if(!data.teacher){
+   			$("#teacher").css('border','1px solid red');
+   			return false;
+   		}
+   		console.log(data);
+   		$.post(
+   			"{apms::U('Admin/Index/courseAdd')}",
+   			data,
+   			function(res){
+   				obj = eval("("+res+")");
+   				if(obj.status){
+   					window.close();
+   				}else{
+   					window.history.back(-1);
+   				}
+   		});
+   }); 
+});
+</script>
+</body>
+</html>
