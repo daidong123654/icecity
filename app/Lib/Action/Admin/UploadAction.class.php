@@ -19,7 +19,7 @@ class UploadAction extends BaseAction
         $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
         $upload->savePath =  './Uploads/kejian/';// 设置附件上传目录
         if(!$upload->upload()) {// 上传错误提示错误信息
-            echo json_encode(array('error'=>-1,'url'=>'ERROR'));
+            echo json_encode(array('error'=>1,'message'=>$upload->getErrorMsg()));
         }else{// 上传成功 获取上传文件信息
             $info =  $upload->getUploadFileInfo();
             $url = C('site_url').'Uploads/kejian/'.$info['0']['savename'];
@@ -35,7 +35,7 @@ class UploadAction extends BaseAction
         $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
         $upload->savePath =  './Uploads/kejian/';// 设置附件上传目录
         if(!$upload->upload()) {// 上传错误提示错误信息
-            echo json_encode(array('error'=>-1,'url'=>'ERROR'));
+            echo json_encode(array('error'=>1,'message'=>$upload->getErrorMsg()));
         }else{// 上传成功 获取上传文件信息
             $info =  $upload->getUploadFileInfo();
             $url = C('site_url').'Uploads/kejian/'.$info['0']['savename'];
@@ -46,7 +46,7 @@ class UploadAction extends BaseAction
 
     private function checkLogin(){
         if(session('adminLogin')!='10086'){
-            echo json_encode(array('error'=>-1,'url'=>'ERROR PLEAST LOGIN!'));
+            echo json_encode(array('error'=>1,'message'=>'ERROR PLEAST LOGIN!'));
             die;
         }else{
             return true;
