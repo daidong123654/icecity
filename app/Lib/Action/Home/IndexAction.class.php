@@ -79,10 +79,10 @@ class IndexAction extends BaseAction
             //session('isreg',null);
             if(!session('isreg')){
                 $course = M('Course')->select();
-                foreach ($course as $key => $value) {
+                /*foreach ($course as $key => $value) {
                   $group = $this->getClassGroup($value);
                   $course[$key]['Group'] = $group;
-                }
+                }*/
                 $courseJson = urldecode(json_encode($this->url_encode($course)));
                 $this->assign('CourseJson',$courseJson);
                 $this->assign('Course',$course);

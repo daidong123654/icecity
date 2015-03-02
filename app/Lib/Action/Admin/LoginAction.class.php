@@ -21,7 +21,7 @@ class LoginAction extends BaseAction
     		if(!empty($admin)){
     			session('adminLogin',10086);
     			M('admin')->where(array('username'=>$username,'password'=>md5($password)))->save(array('lastlogin'=>date('Y-m-d H:i:s')));
-    			$this->redirect('Admin/Index/index','',3, '页面跳转中...');
+    			$this->redirect('Admin/Index/index','',1, '页面跳转中...');
     			return true;
     		}
     	}

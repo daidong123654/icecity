@@ -67,22 +67,24 @@
                     <div class="form-group">
                         <label for="parentGroup" class="col-sm-2 control-label">大组</label>
                         <div class="col-sm-10">
-                            <select id="parentGroup" name="parentGroup" class="form-control">
+                            <input type="text" name="parentGroup" class="form-control" id="parentGroup" value="" placeholder="大组">
+                            <!--<select id="parentGroup" name="parentGroup" class="form-control">
                                 <volist name="Course[0]['Group']" id="G">
                                     <option  id="pg_{apms:$i-1}" value="{apms:$G.id}" >{apms:$G['name']}</option>
                                 </volist>
-                            </select>
+                            </select>-->
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="subGroup" class="col-sm-2 control-label">小组</label>
                         <div class="col-sm-10">
-                            <select id="subGroup" name="subGroup" class="form-control">
+                            <input type="text" name="subGroup" class="form-control" id="subGroup" value="" placeholder="小组">
+                            <!--<select id="subGroup" name="subGroup" class="form-control">
                                 <volist name="Course[0]['Group'][0]['subGroup']" id="SG">
                                     <option  id="sg_{apms:$i-1}" value="{apms:$SG.id}" >{apms:$SG['name']}</option>
                                 </volist>
-                            </select>
+                            </select>-->
                         </div>
                     </div>
 
@@ -118,7 +120,7 @@
     <script type="text/javascript">
         $().ready(function(){
             CourseJson = {apms:$CourseJson};
-
+            /*
             //课程变化大组跟着变化
             $("#course").change(function(){
                 //选中的option的id
@@ -138,9 +140,7 @@
                 sgselect.html("<option value='' selected > 请先选择大组...</option>");
                 $.each(Groups,function(i,n){
                     pgselect.append("<option value='" + this.id + "' id='pg_"+i+"'>" + this.name + "</option>");    
-                    
                 });
-                
             });
 
             //大组变化，小组跟着变化
@@ -161,9 +161,8 @@
                 sgselect.html("<option value='' selected > 请选择小组...</option>");
                 $.each(subGroups,function(i,n){
                     sgselect.append("<option value='" + this.id + "' id='sg_"+i+"'>" + this.name + "</option>");    
-                    
                 });
-            });
+            });*/
 
             //提交前校验
             $("#submit").click(function(){

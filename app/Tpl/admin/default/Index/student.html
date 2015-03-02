@@ -49,12 +49,14 @@
 		<tr>
 			<th></th>
 			<th>序号</th>
-			<th width="15%">姓名</th>
-			<th width="15%">学号</th>
-			<th width="15%">签到得分</th>
-			<th width="15%">签到时间</th>
-			<th width+"15%">签到IP</th>
-			<th width="15%">课程</th>
+			<th width="10%">姓名</th>
+			<th width="10%">学号</th>
+			<th width="10%">签到得分</th>
+			<th width="10%">签到时间</th>
+			<th width="10%">大组</th>
+			<th width="10%">小组</th>
+			<th width+"10%">签到IP</th>
+			<th width="10%">课程</th>
 			<th width="4%" style="min-width:100px;">操作</th>
 		</tr>
 		<tbody id="tbody">
@@ -69,6 +71,8 @@
         		<td>{apms:$value['studentid']}</td>
         		<td>{apms:$value['score']}</td>
         		<td>{apms:$value['time']}</td>
+        		<td>{apms:$value['pgid']}</td>
+        		<td>{apms:$value['sgid']}</td>
         		<td>{apms:$value['ip']}</td>
         		<td>{apms:$value['course']['name']}</td>
                	<td>
