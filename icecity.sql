@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2015-01-28 17:29:22
+-- Generation Time: 2015-03-02 11:36:03
 -- 服务器版本： 5.6.21
 -- PHP Version: 5.5.15
 
@@ -23,13 +23,33 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `apms_admin`
+--
+
+CREATE TABLE IF NOT EXISTS `apms_admin` (
+`id` int(11) NOT NULL,
+  `username` varchar(128) NOT NULL,
+  `password` varchar(64) NOT NULL,
+  `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- 转存表中的数据 `apms_admin`
+--
+
+INSERT INTO `apms_admin` (`id`, `username`, `password`, `lastlogin`) VALUES
+(1, 'test', '66f36666061e93c12f99586c3beeb7e8', '2015-03-02 03:26:00');
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `apms_course`
 --
 
 CREATE TABLE IF NOT EXISTS `apms_course` (
 `id` int(11) NOT NULL,
   `name` varchar(64) NOT NULL,
-  `starttime` varchar(6) NOT NULL COMMENT '上课时间，例如13:00',
+  `starttime` varchar(5) NOT NULL COMMENT '上课时间，例如13:00',
   `scorerule` tinyint(3) NOT NULL DEFAULT '1' COMMENT '每迟到几分钟算一分，如果5分钟算一分则为5',
   `teacher` varchar(32) NOT NULL COMMENT '老师名称'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
@@ -40,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `apms_course` (
 
 INSERT INTO `apms_course` (`id`, `name`, `starttime`, `scorerule`, `teacher`) VALUES
 (1, '柔性制造', '10:50', 1, '李中振'),
-(2, '刚性制造', '10:00', 1, '李中振');
+(2, '钢芯制造', '10:00', 1, 'lzz');
 
 -- --------------------------------------------------------
 
@@ -53,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `apms_group` (
   `name` varchar(32) NOT NULL,
   `parentid` int(11) NOT NULL,
   `classid` int(11) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='无用' AUTO_INCREMENT=17 ;
 
 --
 -- 转存表中的数据 `apms_group`
@@ -80,6 +100,24 @@ INSERT INTO `apms_group` (`id`, `name`, `parentid`, `classid`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `apms_kejian`
+--
+
+CREATE TABLE IF NOT EXISTS `apms_kejian` (
+`id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `content` text NOT NULL,
+  `indexid` int(3) NOT NULL COMMENT '排序id',
+  `courseid` int(11) NOT NULL COMMENT '课程id'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+
+--
+-- 转存表中的数据 `apms_kejian`
+--
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `apms_login`
 --
 
@@ -94,6 +132,18 @@ CREATE TABLE IF NOT EXISTS `apms_login` (
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `apms_photo`
+--
+
+CREATE TABLE IF NOT EXISTS `apms_photo` (
+`id` int(11) NOT NULL,
+  `image` varchar(200) NOT NULL,
+  `create_time` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `apms_qiandao`
 --
 
@@ -102,8 +152,8 @@ CREATE TABLE IF NOT EXISTS `apms_qiandao` (
   `name` varchar(20) NOT NULL,
   `studentid` varchar(32) NOT NULL,
   `courseid` int(11) NOT NULL,
-  `pgid` int(11) NOT NULL,
-  `sgid` int(11) NOT NULL,
+  `pgid` varchar(32) NOT NULL,
+  `sgid` varchar(32) NOT NULL,
   `date` varchar(16) NOT NULL COMMENT '签到日期，和下面的time重复，但是为了统计快',
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `mac` varchar(32) NOT NULL,
@@ -114,6 +164,12 @@ CREATE TABLE IF NOT EXISTS `apms_qiandao` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `apms_admin`
+--
+ALTER TABLE `apms_admin`
+ ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `apms_course`
@@ -128,9 +184,21 @@ ALTER TABLE `apms_group`
  ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `apms_kejian`
+--
+ALTER TABLE `apms_kejian`
+ ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `apms_login`
 --
 ALTER TABLE `apms_login`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `apms_photo`
+--
+ALTER TABLE `apms_photo`
  ADD PRIMARY KEY (`id`);
 
 --
@@ -144,6 +212,11 @@ ALTER TABLE `apms_qiandao`
 --
 
 --
+-- AUTO_INCREMENT for table `apms_admin`
+--
+ALTER TABLE `apms_admin`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
 -- AUTO_INCREMENT for table `apms_course`
 --
 ALTER TABLE `apms_course`
@@ -154,9 +227,19 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 ALTER TABLE `apms_group`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
 --
+-- AUTO_INCREMENT for table `apms_kejian`
+--
+ALTER TABLE `apms_kejian`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=22;
+--
 -- AUTO_INCREMENT for table `apms_login`
 --
 ALTER TABLE `apms_login`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `apms_photo`
+--
+ALTER TABLE `apms_photo`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `apms_qiandao`
